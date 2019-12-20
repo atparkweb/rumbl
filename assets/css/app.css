@@ -1,3 +1,16 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+
+header [role=navigation] ul li {
+    display: inline-block;
+    border-right: 2px solid #ccc;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+}
+header [role=navigation] ul li:last-child {
+    border-right-style: none;
+}
+header [role=navigation] ul li:first-child {
+    padding-left: 0;
+}
