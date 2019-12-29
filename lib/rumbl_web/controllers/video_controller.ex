@@ -9,8 +9,8 @@ defmodule RumblWeb.VideoController do
     apply(__MODULE__, action_name(conn), args)
   end
 
-  def index(conn, _params) do
-    videos = Multimedia.list_videos()
+  def index(conn, _params, current_user) do
+    videos = Multimedia.list_user_videos(current_user)
     render(conn, "index.html", videos: videos)
   end
 
@@ -31,8 +31,8 @@ defmodule RumblWeb.VideoController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    video = Multimedia.get_video!(id)
+  def show(conn, %{"id" => id}, current_user) do
+    video = Multimedia.get_user_video!(current_user, id)
     render(conn, "show.html", video: video)
   end
 
