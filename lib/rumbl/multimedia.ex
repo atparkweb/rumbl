@@ -2,7 +2,6 @@ defmodule Rumbl.Multimedia do
   @moduledoc """
   The Multimedia context.
   """
-  require Logger
 
   import Ecto.Query, warn: false
   alias Rumbl.Repo
@@ -21,7 +20,6 @@ defmodule Rumbl.Multimedia do
 
   """
   def list_videos do
-    Logger.warn("Use list_user_videos/2 to restrict video list to current user")
     Repo.all(Video)
   end
   
@@ -40,7 +38,6 @@ defmodule Rumbl.Multimedia do
 
   """
   def get_video!(id) do
-    Logger.warn("Use get_user_video!/2 to restrict access")
     Repo.get!(Video, id)
   end
 
