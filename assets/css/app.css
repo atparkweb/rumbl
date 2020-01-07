@@ -1,6 +1,7 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+@import "./video.css";
 
 header [role=navigation] ul li {
     display: inline-block;
