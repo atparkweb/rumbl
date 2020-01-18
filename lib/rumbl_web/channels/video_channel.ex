@@ -1,10 +1,21 @@
 defmodule RumblWeb.VideoChannel do
   use RumblWeb, :channel
-  
-  alias Rumbl.Multimedia
-  
+
+  alias Rumbl.{
+    Accounts,
+    Multimedia
+  }
+
   def join("videos:" <> video_id, _params, socket) do
-    {:ok, assign(socket, :video_id, String.to_integer(video_id))}
+    video_id = String.to_integer(video_id)
+    video = Multimedia.get_video!(video_id)
+    
+    annotation =
+      video
+      |> Multimedia.list_annotations()
+      |> Phoenix.View.render_many(AnnotationView, "annotation.json")
+
+    {:ok, %{annotations: annotations}, assign(socket, :video_id, video_id)}
   end
   
   def handle_in(event, params, socket) do
