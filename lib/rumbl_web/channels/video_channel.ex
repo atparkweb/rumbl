@@ -10,7 +10,7 @@ defmodule RumblWeb.VideoChannel do
     video_id = String.to_integer(video_id)
     video = Multimedia.get_video!(video_id)
     
-    annotation =
+    annotations =
       video
       |> Multimedia.list_annotations()
       |> Phoenix.View.render_many(AnnotationView, "annotation.json")
