@@ -1,5 +1,7 @@
 defmodule RumblWeb.VideoChannel do
   use RumblWeb, :channel
+  
+  alias RumblWeb.AnnotationView
 
   alias Rumbl.{
     Accounts,
