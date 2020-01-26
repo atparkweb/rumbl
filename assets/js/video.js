@@ -1,4 +1,5 @@
 import Player from './player'
+import {Presence} from 'phoenix'
 
 let Video = {
   init(socket, element) {
@@ -16,23 +17,32 @@ let Video = {
     let msgContainer = document.getElementById("msg-container");
     let msgInput = document.getElementById("msg-input");
     let postButton = document.getElementById("msg-submit");
+    let userList = document.getElementById("user-list");
     let lastSeenId = 0;
     let vidChannel = socket.channel("videos:" + videoId, ()=> {
       return { last_seen_id: lastSeenId };
     });
-    
+
+    let presence = new Presence(vidChannel);
+    presence.onSync(() => {
+      userList.innerHTML = presence.list((id, {metas: [first, ...rest]}) => {
+	let count = rest.length + 1;
+	return `<li>${id}: (${count})</li>`
+      }).join("");
+    });
+
     postButton.addEventListener("click", e => {
       let payload = {body: msgInput.value, at: Player.getCurrentTime()};
       vidChannel.push("new_annotation", payload)
 	.receive("error", e => console.log(e));
       msgInput.value = "";
     });
-    
+
     vidChannel.on("new_annotation", (resp) => {
       lastSeenId = resp.id;
       this.renderAnnotation(msgContainer, resp);
     });
-    
+
     msgContainer.addEventListener("click", e => {
       e.preventDefault();
       let seconds = e.target.getAttribute("data-seek") ||
@@ -40,7 +50,7 @@ let Video = {
       if (!seconds) return;
       Player.seekTo(seconds);
     });
-    
+
     vidChannel.join()
       .receive("ok", (resp) => {
 	let ids = resp.annotations.map(ann => ann.id)
@@ -49,7 +59,7 @@ let Video = {
       })
       .receive("error", reason => console.log("join failed", reason));
   },
-  
+
   esc(str) {
     let div = document.createElement("div");
     div.appendChild(document.createTextNode(str));
@@ -76,7 +86,7 @@ let Video = {
       this.scheduleMessages(msgContainer, remaining)
     }, 1000)
   },
-  
+
   renderAtTime(annotations, seconds, msgContainer) {
     return annotations.filter(ann => {
       if(ann.at > seconds) {
